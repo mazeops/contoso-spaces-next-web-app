@@ -25,15 +25,20 @@ jobs:
       - name: Run build
         run: npm run build
 
+      - name: Zip static export
+        if: success()
+        uses: papeloto/action-zip@v1
+        with:
+          files: out
+          dest: next-build-${{ github.run_number }}.zip
+
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: next-build-${{ github.run_number }}
-          path: |
-            .next
-            out
-          if-no-files-found: warn
+          path: next-build-${{ github.run_number }}.zip
+          if-no-files-found: error
 
   inspect-artifact:
     runs-on: ubuntu-latest
@@ -42,8 +47,4 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: next-build-${{ github.run_number }}
-
-      - name: List artifact contents
-        run: |
-          ls -R
+          name: next-build-${{ github.run_number }}.zip
