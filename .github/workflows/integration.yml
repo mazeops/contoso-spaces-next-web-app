@@ -25,10 +25,12 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Upload build artifact
+      - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: next-build-${{ github.run_number }}
-          path: .next/
-          if-no-files-found: error
+          path: |
+            .next
+            out
+          if-no-files-found: warn
